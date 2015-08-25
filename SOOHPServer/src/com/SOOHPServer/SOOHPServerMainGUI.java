@@ -219,6 +219,7 @@ public class SOOHPServerMainGUI extends JPanel{
 		  bottomHalf.add(newRule, BorderLayout.WEST);
 		  
 		  frame.setVisible(true);
+		  
 	  }
 	  
 	//then the button action handlers 
