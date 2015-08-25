@@ -48,6 +48,7 @@ public class SOOHPServerMainGUI extends JPanel{
 	public static JButton clPrevious = new JButton("Previous");
 	public static JButton clSave = new JButton("Save");
 	public static JButton clArchive = new JButton("Archive");
+	public static JButton clBack = new JButton("Back");
 	public static newClueListsButtonHandler myNewClueListsButtonHandler = new newClueListsButtonHandler();
 	public static savedClueListsButtonHandler mySavedClueListsButtonHandler = new savedClueListsButtonHandler();
 	public static newQuestionButtonHandler myNewQuestionButtonHandler = new newQuestionButtonHandler();
@@ -56,6 +57,7 @@ public class SOOHPServerMainGUI extends JPanel{
 	public static clPreviousButtonHandler myClPreviousButtonHandler = new clPreviousButtonHandler();
 	public static clSaveHandler myClSaveHandler = new clSaveHandler();
 	public static clArchiveHandler myClArchiveHandler = new clArchiveHandler();
+	public static clBackHandler myClBackHandler = new clBackHandler();
 	
 	public static String pathSubmittedClueLists = "D:\\SOOHPServer\\ClueLists\\SubmittedClueLists\\";
 	public static String pathSavedClueLists = "D:\\SOOHPServer\\ClueLists\\SavedClueLists\\";
@@ -77,9 +79,9 @@ public class SOOHPServerMainGUI extends JPanel{
 		clPrevious.addMouseListener(myClPreviousButtonHandler);
 		clSave.addMouseListener(myClSaveHandler);
 		clArchive.addMouseListener(myClArchiveHandler);
+		clBack.addMouseListener(myClBackHandler);
 		
-		
-		// devide the main panel into a to and a bottom
+		// divide the main panel into a top and a bottom
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		add(splitPane, BorderLayout.CENTER);
 
@@ -113,7 +115,10 @@ public class SOOHPServerMainGUI extends JPanel{
 	  }
 	  
 	// then have methods to call the different screens
-	  public void showMenuScreen() {
+	  public static void showMenuScreen() {
+		  topHalf.removeAll();
+		  topHalf.repaint();
+		  topHalf.setVisible(true);
 		  topLabel.setText("Clue Lists");
 		  topHalf.setLayout((new GridLayout(3, 3)));
 		  bottomLabel.setText("Questions & Rules");
@@ -123,6 +128,9 @@ public class SOOHPServerMainGUI extends JPanel{
 		  topHalf.add(newClueLists, BorderLayout.EAST);
 		  topHalf.add(savedClueLists, BorderLayout.WEST);
 		  
+		  bottomHalf.removeAll();
+		  bottomHalf.repaint();
+		  bottomHalf.setVisible(true);
 		  bottomHalf.add(bottomLabel, BorderLayout.NORTH);
 		  bottomHalf.add(newQuestion, BorderLayout.EAST);
 		  bottomHalf.add(newRule, BorderLayout.WEST);
@@ -132,7 +140,7 @@ public class SOOHPServerMainGUI extends JPanel{
 	  
 	  public static void showClueListScreen(){
 		  topLabel.setText(newOrSaved + " Clue Lists");
-		  bottomLabel.setText(newOrSaved);
+		  //bottomLabel.setText(newOrSaved);
 		  
 		  //clear everything out
 		  topHalf.removeAll();
@@ -141,8 +149,8 @@ public class SOOHPServerMainGUI extends JPanel{
 		  topHalf.repaint();
 		  topHalf.setVisible(true);
 		  bottomHalf.removeAll();
-		  bottomHalf.add(bottomLabel, BorderLayout.NORTH);
-		  bottomHalf.setLayout((new GridLayout(3, 1)));
+		  //bottomHalf.add(bottomLabel, BorderLayout.NORTH);
+		  bottomHalf.setLayout((new GridLayout(2, 1)));
 		  bottomHalf.repaint();
 		  bottomHalf.setVisible(true);
 
@@ -174,6 +182,7 @@ public class SOOHPServerMainGUI extends JPanel{
 			clButtonPanel.add(clPrevious);
 			clButtonPanel.add(clSave);
 			clButtonPanel.add(clArchive);
+			clButtonPanel.add(clBack);
 			bottomHalf.add(clButtonPanel);
 			
 			getClueLists();
@@ -283,6 +292,12 @@ public class SOOHPServerMainGUI extends JPanel{
 				if (listOfClueListFiles.size()>0){
 					moveToArchived();
 				}
+				}
+			}
+		
+		public static class clBackHandler extends MouseAdapter {
+			public void mouseReleased(MouseEvent e) {
+				showMenuScreen();
 				}
 			}
 
