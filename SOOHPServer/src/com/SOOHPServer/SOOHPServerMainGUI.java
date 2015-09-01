@@ -60,6 +60,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	// public static JLabel Label2 = new JLabel("2");
 	// public static JLabel Label3 = new JLabel("3");
 	public static JTextArea questionTextArea;
+	public static JTextArea conditionTextArea;
 	public static JTextArea word1;
 	public static JTextArea word2;
 	public static JTextArea word3;
@@ -88,7 +89,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static JButton selectButton = new JButton("Select");
 	public static JButton nqSave = new JButton("Save");
 	public static JButton nrSave = new JButton("Save");
-	public static JButton nrAddCondition = new JButton("Save");
+	public static JButton nrAddCondition = new JButton("Add");
 	
 	public static newClueListsButtonHandler myNewClueListsButtonHandler = new newClueListsButtonHandler();
 	public static savedClueListsButtonHandler mySavedClueListsButtonHandler = new savedClueListsButtonHandler();
@@ -103,7 +104,6 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static nqSaveHandler myNqSaveHandler = new nqSaveHandler();
 	public static nrSaveHandler myNrSaveHandler = new nrSaveHandler();
 	public static nrAddConditionHandler myNrAddConditionHandler = new nrAddConditionHandler();
-	
 	
 	public static String pathSubmittedClueLists = "D:\\SOOHPServer\\ClueLists\\SubmittedClueLists\\";
 	public static String pathSavedClueLists = "D:\\SOOHPServer\\ClueLists\\SavedClueLists\\";
@@ -256,7 +256,7 @@ public class SOOHPServerMainGUI extends JPanel {
 
 		// set up labels
 		topLabel.setText("Choose a question type");
-		middleLabel.setText("describe the question in three words");
+		middleLabel.setText("Describe the question in three words");
 		bottomLabel.setText("Question text");
 		bottomHalf.setLayout((new GridLayout(3, 1)));
 		// the type choice combo box pulls the list of question types from
@@ -334,7 +334,8 @@ public class SOOHPServerMainGUI extends JPanel {
 		wordPanel.removeAll();
 
 		// set up the question type area (questionTypePanel)
-		questionTypeLabel.setText("Choose a question type");
+		questionTypeLabel.setText("Please fill out the following fields in order: 1.Choose a question type");
+	
 		JPanel questionTypePanel = new JPanel();
 		questionTypePanel.setLayout((new GridLayout(2, 1)));
 		// the type choice combo box pulls the list of question types from
@@ -353,7 +354,7 @@ public class SOOHPServerMainGUI extends JPanel {
 
 		// set up the word choice area (wordPanel)
 		JPanel wordPanel2 = new JPanel();
-		chooseWordsLabel.setText("describe the question in three words");
+		chooseWordsLabel.setText("2.Describe the question in three words");
 		word1 = new JTextArea(1, 1);
 		word1.setEditable(true);
 		word1.setFont(new Font("Serif", Font.ITALIC, 15));
@@ -379,7 +380,7 @@ public class SOOHPServerMainGUI extends JPanel {
 		JPanel nrAddConditionsPanel2 = new JPanel();
 		nrAddConditionsPanel1.setLayout((new GridLayout(3, 1)));
 		nrAddConditionsPanel2.setLayout((new GridLayout(2, 4)));
-		addConditionsLabel.setText("Choose the conditions for the rule");
+		addConditionsLabel.setText("3.Choose the conditions for the rule");
 		questionChoice.removeAllItems();
 		for (int b = 0; b < questionTextVector.size(); b++) {
 			questionChoice.addItem(questionTextVector.get(b));
@@ -397,6 +398,24 @@ public class SOOHPServerMainGUI extends JPanel {
 		nrAddConditionsPanel1.add(addConditionsLabel);
 		nrAddConditionsPanel1.add(questionChoice);
 		nrAddConditionsPanel1.add(nrYesNoBox);
+		
+		
+		
+		// setup condition display area
+		conditionTextArea = new JTextArea(1, 10);
+		conditionTextArea.setEditable(true);
+		conditionTextArea.setFont(new Font("Serif", Font.ITALIC, 20));
+		conditionTextArea.setLineWrap(true);
+		conditionTextArea.setWrapStyleWord(true);
+		JScrollPane conditionTextPane = new JScrollPane(questionTextArea,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		
+		
+		
+		
+		nrAddConditionsPanel2.add(nrAddCondition);
+		nrAddConditionsPanel2.add(conditionTextPane);
 		
 		
 		// set up the test text area (questionTextPanel)
@@ -429,7 +448,8 @@ public class SOOHPServerMainGUI extends JPanel {
 		topHalf.add(questionTypePanel);
 		topHalf.add(wordPanel);
 		topHalf.add(nrAddConditionsPanel1);
-
+		topHalf.add(nrAddConditionsPanel2);
+		
 		bottomHalf.setLayout((new GridLayout(3, 1)));
 		bottomHalf.add(questionTextPanel);
 		bottomHalf.add(nrButtonPanel);
@@ -564,6 +584,7 @@ public class SOOHPServerMainGUI extends JPanel {
 			System.out.println("nqSave");
 		}
 	}
+	
 	
 	public static class nrAddConditionHandler extends MouseAdapter {
 		public void mouseReleased(MouseEvent e) {
