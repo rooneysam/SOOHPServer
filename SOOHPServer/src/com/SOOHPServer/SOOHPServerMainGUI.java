@@ -56,7 +56,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static JLabel clTimeStampLabel = new JLabel();
 	public static JLabel blankLabel = new JLabel("");
 	public static JLabel blankLabel2 = new JLabel("");
-	// public static JLabel Label1 = new JLabel("1");
+	public static JLabel Label1 = new JLabel("1");
 	// public static JLabel Label2 = new JLabel("2");
 	// public static JLabel Label3 = new JLabel("3");
 	public static JTextArea questionTextArea;
@@ -65,16 +65,19 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static JTextArea word2;
 	public static JTextArea word3;
 	static Vector<Question> allQuestions = new Vector<Question>();
+	static Vector<Question> typeQuestions = new Vector<Question>();
 	public static Vector<String> questionTypes = new Vector<String>();
 	public static Vector<String> questionTextVector = new Vector<String>();
 
 	public static JComboBox typeChoice = new JComboBox();
 	public static JComboBox questionChoice = new JComboBox();
 	public static JComboBox nrYesNoBox = new JComboBox();
-	public static String SelectedType;
+	public static String selectedType;
 	public static JPanel wordPanel = new JPanel(new BorderLayout());
 	public static JPanel nqButtonPanel = new JPanel(new GridLayout(1, 2));
 	public static JPanel nrButtonPanel = new JPanel(new GridLayout(1, 2));
+	public static JPanel nrAddConditionsPanel1 = new JPanel();
+	public static JPanel nrAddConditionsPanel2 = new JPanel();
 
 	public static JButton newClueLists = new JButton("New Clue Lists");
 	public static JButton savedClueLists = new JButton("Saved Clue Lists");
@@ -90,6 +93,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static JButton nqSave = new JButton("Save");
 	public static JButton nrSave = new JButton("Save");
 	public static JButton nrAddCondition = new JButton("Add");
+	public static JButton SelectButton = new JButton("Add");
 	
 	public static newClueListsButtonHandler myNewClueListsButtonHandler = new newClueListsButtonHandler();
 	public static savedClueListsButtonHandler mySavedClueListsButtonHandler = new savedClueListsButtonHandler();
@@ -105,6 +109,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static nrSaveHandler myNrSaveHandler = new nrSaveHandler();
 	public static nrAddConditionHandler myNrAddConditionHandler = new nrAddConditionHandler();
 	
+	
 	public static String pathSubmittedClueLists = "D:\\SOOHPServer\\ClueLists\\SubmittedClueLists\\";
 	public static String pathSavedClueLists = "D:\\SOOHPServer\\ClueLists\\SavedClueLists\\";
 	public static String pathArchivedClueLists = "D:\\SOOHPServer\\ClueLists\\ArchivedClueLists\\";
@@ -114,9 +119,10 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static Vector<File> listOfClueListFiles = new Vector<File>();
 	public static Vector<String> listOfClueListNames = new Vector<String>();
 	public static int pageNumber = 0;
-	public static String selectedType = new String();
+	public static String SelectedType  = new String();
 	public static String thisQuestion = new String();
-
+	public static String nrSelectedCondition = new String();
+	public static String nrYesNo = new String("Yes");
 
 	SOOHPServerMainGUI() {
 		// declare button handlers
@@ -267,9 +273,9 @@ public class SOOHPServerMainGUI extends JPanel {
 				typeChoice.addItem(questionTypes.get(b));
 			}
 		}
-		ComboListener myComboListener = null;
-		myComboListener = new ComboListener();
-		typeChoice.addActionListener(myComboListener);
+		typeComboListener myTypeComboListener = null;
+		myTypeComboListener = new typeComboListener();
+		typeChoice.addActionListener(myTypeComboListener);
 
 		// setup question display area
 		questionTextArea = new JTextArea(1, 10);
@@ -331,13 +337,16 @@ public class SOOHPServerMainGUI extends JPanel {
 		bottomHalf.setLayout((new GridLayout(1, 3)));
 		bottomHalf.repaint();
 		bottomHalf.setVisible(true);
+		nrAddConditionsPanel1.removeAll();
+		nrAddConditionsPanel2.removeAll();
 		wordPanel.removeAll();
+		//selectedType=("");
 
 		// set up the question type area (questionTypePanel)
 		questionTypeLabel.setText("Please fill out the following fields in order: 1.Choose a question type");
 	
 		JPanel questionTypePanel = new JPanel();
-		questionTypePanel.setLayout((new GridLayout(2, 1)));
+		questionTypePanel.setLayout((new GridLayout(3, 1)));
 		// the type choice combo box pulls the list of question types from
 		// the questionTypes Vector
 		typeChoice.removeAllItems();
@@ -346,11 +355,12 @@ public class SOOHPServerMainGUI extends JPanel {
 				typeChoice.addItem(questionTypes.get(b));
 			}
 		}
-		ComboListener myComboListener = null;
-		myComboListener = new ComboListener();
-		typeChoice.addActionListener(myComboListener);
+		typeComboListener myTypeComboListener = null;
+		myTypeComboListener = new typeComboListener();
+		typeChoice.addActionListener(myTypeComboListener);
 		questionTypePanel.add(questionTypeLabel);
 		questionTypePanel.add(typeChoice);
+		questionTypePanel.add(selectButton);
 
 		// set up the word choice area (wordPanel)
 		JPanel wordPanel2 = new JPanel();
@@ -376,23 +386,23 @@ public class SOOHPServerMainGUI extends JPanel {
 		wordPanel2.add(word3);
 
 		// set up the add conditions area (nrAddConditionsPanel1,nrAddConditionsPanel2 )
-		JPanel nrAddConditionsPanel1 = new JPanel();
-		JPanel nrAddConditionsPanel2 = new JPanel();
+//		JPanel nrAddConditionsPanel1 = new JPanel();
+//		JPanel nrAddConditionsPanel2 = new JPanel();
 		nrAddConditionsPanel1.setLayout((new GridLayout(3, 1)));
 		nrAddConditionsPanel2.setLayout((new GridLayout(2, 4)));
 		addConditionsLabel.setText("3.Choose the conditions for the rule");
-		questionChoice.removeAllItems();
-		for (int b = 0; b < questionTextVector.size(); b++) {
-			questionChoice.addItem(questionTextVector.get(b));
-		}
-		ComboListener questionComboListener = null;
-		questionComboListener = new ComboListener();
-		questionChoice.addActionListener(questionComboListener);
+//		questionChoice.removeAllItems();
+//		for (int b = 0; b < questionTextVector.size(); b++) {
+//			questionChoice.addItem(questionTextVector.get(b));
+//		}
+		questionComboListener myQuestionComboListener = null;
+		myQuestionComboListener = new questionComboListener();
+		questionChoice.addActionListener(myQuestionComboListener);
 		nrYesNoBox.removeAllItems();
 		nrYesNoBox.addItem("Yes");
 		nrYesNoBox.addItem("No");
-		ComboListener nrYesNoBoxComboListener = null;
-		nrYesNoBoxComboListener = new ComboListener();
+		yesNoBoxComboListener nrYesNoBoxComboListener = null;
+		nrYesNoBoxComboListener = new yesNoBoxComboListener();
 		nrYesNoBox.addActionListener(nrYesNoBoxComboListener);
 		
 		nrAddConditionsPanel1.add(addConditionsLabel);
@@ -407,7 +417,7 @@ public class SOOHPServerMainGUI extends JPanel {
 		conditionTextArea.setFont(new Font("Serif", Font.ITALIC, 20));
 		conditionTextArea.setLineWrap(true);
 		conditionTextArea.setWrapStyleWord(true);
-		JScrollPane conditionTextPane = new JScrollPane(questionTextArea,
+		JScrollPane conditionTextPane = new JScrollPane(conditionTextArea,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
@@ -421,12 +431,13 @@ public class SOOHPServerMainGUI extends JPanel {
 		// set up the test text area (questionTextPanel)
 		JPanel questionTextPanel = new JPanel();
 		questionTextPanel.setLayout((new GridLayout(2, 1)));
-		questionTextLabel.setText("Test text");
+		questionTextLabel.setText("4. Type in the test question you would like to ask");
 		questionTextArea = new JTextArea(1, 10);
 		questionTextArea.setEditable(true);
 		questionTextArea.setFont(new Font("Serif", Font.ITALIC, 20));
 		questionTextArea.setLineWrap(true);
 		questionTextArea.setWrapStyleWord(true);
+		questionTextArea.setText("");
 		JScrollPane questionTextPane = new JScrollPane(questionTextArea,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -563,7 +574,7 @@ public class SOOHPServerMainGUI extends JPanel {
 					writer = new PrintWriter(new FileWriter(pathApplication
 							+ "allQuestions.csv", true));
 
-					thisQuestion = new String(selectedType);
+					thisQuestion = new String(SelectedType);
 					writer.println(thisQuestion + "," + thisQuestion + "."
 							+ word1.getText() + "." + word2.getText() + "."
 							+ word3.getText() + ","
@@ -581,24 +592,74 @@ public class SOOHPServerMainGUI extends JPanel {
 
 	public static class nrSaveHandler extends MouseAdapter {
 		public void mouseReleased(MouseEvent e) {
-			System.out.println("nqSave");
+			System.out.println("nrSave");
 		}
 	}
 	
 	
 	public static class nrAddConditionHandler extends MouseAdapter {
 		public void mouseReleased(MouseEvent e) {
-			System.out.println("nqSave");
+			System.out.println("nrAdd");
+			for (int b = 0; b < typeQuestions.size(); b++) {
+				if (typeQuestions.get(b).getQuestionText().equals(questionChoice.getSelectedItem())){
+					String thisCondition = new String(typeQuestions.get(b).getQuestionName());
+					//conditionTextArea.setText(thisCondition);
+					conditionTextArea.append(thisCondition + "-"+nrYesNo+"\n");
+				}
+			}
 		}
 	}
 
-	// /Listens to the combo box
-	public static class ComboListener implements ActionListener {
+	
+	public static class selectButtonHandler extends MouseAdapter {
+		public void mouseReleased(MouseEvent e) {
+			System.out.println("test123");
+			questionChoice.removeAllItems();
+			typeQuestions.removeAllElements();
+			nrAddConditionsPanel1.setVisible(true);
+			if(SelectedType==""){
+				questionTypeLabel.setText("Please select a type");
+			}
+			else{
+				for (int d = 0; d < allQuestions.size(); d++) {
+					if ((allQuestions.get(d).getQuestionType())
+							.equals(SelectedType)) {
+						typeQuestions.add(allQuestions.get(d));
+					}
+					
+				}	
+				for (int b = 0; b < typeQuestions.size(); b++) {
+					questionChoice.addItem(typeQuestions.get(b).getQuestionText());
+				}
+				nrAddConditionsPanel1.setVisible(true);
+				nrSave.setEnabled(true);
+				nrSave.setVisible(true);
+			}
+		}
+	}
+	
+	// /Listens to the type combo box
+	public static class typeComboListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			selectedType = (String) typeChoice.getSelectedItem();
-			System.out.println((String) typeChoice.getSelectedItem() + "1");
+			SelectedType = (String) typeChoice.getSelectedItem();
+			System.out.println(SelectedType  + " typechoice");
 			nqSave.setEnabled(true);
 			nqSave.setVisible(true);
+		}
+	}
+	
+	// /Listens to the question combo box
+	public static class questionComboListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			nrSelectedCondition = (String) questionChoice.getSelectedItem();
+		}
+	}
+	
+	// /Listens to the yesNo combo box
+	public static class yesNoBoxComboListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			nrYesNo = (String) nrYesNoBox.getSelectedItem();
+			
 		}
 	}
 
@@ -789,10 +850,6 @@ public class SOOHPServerMainGUI extends JPanel {
 		return new Question(qType, qName, qText);
 	}
 
-	public static class selectButtonHandler extends MouseAdapter {
-		public void mouseReleased(MouseEvent e) {
-			System.out.println("test123");
-		}
-	}
+
 
 }
