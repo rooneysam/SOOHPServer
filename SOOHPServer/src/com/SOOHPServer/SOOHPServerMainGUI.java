@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.nio.file.StandardOpenOption;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -22,6 +23,7 @@ import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -32,6 +34,12 @@ import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
 import org.apache.commons.io.FileUtils;
+
+
+
+
+
+
 
 ///import com.SOOHP.SOOHPMain;
 ///import com.SOOHP.SOOHPMain.SOOHPUI;
@@ -93,12 +101,15 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static JButton nqSave = new JButton("Save");
 	public static JButton nrSave = new JButton("Save");
 	public static JButton nrAddCondition = new JButton("Add");
-	public static JButton SelectButton = new JButton("Add");
+///	public static JButton SelectButton = new JButton("Add");
+	public static JButton update = new JButton("Update Files");
+	public static JCheckBox nrIsFixBox = new JCheckBox("isFix");
 	
 	public static newClueListsButtonHandler myNewClueListsButtonHandler = new newClueListsButtonHandler();
 	public static savedClueListsButtonHandler mySavedClueListsButtonHandler = new savedClueListsButtonHandler();
 	public static newQuestionButtonHandler myNewQuestionButtonHandler = new newQuestionButtonHandler();
 	public static newRuleButtonHandler myNewRuleButtonHandler = new newRuleButtonHandler();
+	public static updateButtonHandler myUpdateButtonHandler = new updateButtonHandler();
 	public static clNextButtonHandler myClNextButtonHandler = new clNextButtonHandler();
 	public static clPreviousButtonHandler myClPreviousButtonHandler = new clPreviousButtonHandler();
 	public static clSaveHandler myClSaveHandler = new clSaveHandler();
@@ -108,7 +119,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static nqSaveHandler myNqSaveHandler = new nqSaveHandler();
 	public static nrSaveHandler myNrSaveHandler = new nrSaveHandler();
 	public static nrAddConditionHandler myNrAddConditionHandler = new nrAddConditionHandler();
-	
+
 	
 	public static String pathSubmittedClueLists = "D:\\SOOHPServer\\ClueLists\\SubmittedClueLists\\";
 	public static String pathSavedClueLists = "D:\\SOOHPServer\\ClueLists\\SavedClueLists\\";
@@ -120,9 +131,11 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static Vector<String> listOfClueListNames = new Vector<String>();
 	public static int pageNumber = 0;
 	public static String SelectedType  = new String();
+	public static String SelectedConditions  = new String();
 	public static String thisQuestion = new String();
 	public static String nrSelectedCondition = new String();
 	public static String nrYesNo = new String("Yes");
+	public static Boolean isFix = new Boolean(false);
 
 	SOOHPServerMainGUI() {
 		// declare button handlers
@@ -130,6 +143,7 @@ public class SOOHPServerMainGUI extends JPanel {
 		savedClueLists.addMouseListener(mySavedClueListsButtonHandler);
 		newQuestion.addMouseListener(myNewQuestionButtonHandler);
 		newRule.addMouseListener(myNewRuleButtonHandler);
+		update.addMouseListener(myUpdateButtonHandler);
 		clNext.addMouseListener(myClNextButtonHandler);
 		clPrevious.addMouseListener(myClPreviousButtonHandler);
 		clSave.addMouseListener(myClSaveHandler);
@@ -140,6 +154,7 @@ public class SOOHPServerMainGUI extends JPanel {
 		clBack.addMouseListener(myClBackHandler);
 		selectButton.addMouseListener(mySelectButtonHandler);
 
+		
 		// divide the main panel into a top and a bottom
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		add(splitPane, BorderLayout.CENTER);
@@ -179,7 +194,7 @@ public class SOOHPServerMainGUI extends JPanel {
 		topLabel.setText("Clue Lists");
 		topHalf.setLayout((new GridLayout(3, 3)));
 		bottomLabel.setText("Questions & Rules");
-		bottomHalf.setLayout((new GridLayout(3, 3)));
+		bottomHalf.setLayout((new GridLayout(4, 3)));
 
 		topHalf.add(topLabel, BorderLayout.NORTH);
 		topHalf.add(newClueLists, BorderLayout.EAST);
@@ -191,6 +206,7 @@ public class SOOHPServerMainGUI extends JPanel {
 		bottomHalf.add(bottomLabel, BorderLayout.NORTH);
 		bottomHalf.add(newQuestion, BorderLayout.EAST);
 		bottomHalf.add(newRule, BorderLayout.WEST);
+		bottomHalf.add(update, BorderLayout.SOUTH);
 
 		frame.setVisible(true);
 	}
@@ -443,6 +459,12 @@ public class SOOHPServerMainGUI extends JPanel {
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		questionTextPanel.add(questionTextLabel);
 		questionTextPanel.add(questionTextArea);
+		
+		// set up the isFix area (nrIsFixPanel)
+		JPanel nrIsFixPanel = new JPanel();
+		JLabel nrIsFixLabel = new JLabel ("5. Tick the box if this test results in a fix as opposed to just a diagnosis: ");
+		nrIsFixPanel.add(nrIsFixLabel);
+		nrIsFixPanel.add(nrIsFixBox);
 
 		// set up the button area (nrButtonPanel)
 		nrSave.setEnabled(false);
@@ -453,9 +475,6 @@ public class SOOHPServerMainGUI extends JPanel {
 
 		// add components
 		topHalf.setLayout((new GridLayout(4, 1)));
-		// topHalf.add(Label1);
-		// topHalf.add(Label2);
-		// topHalf.add(Label3);
 		topHalf.add(questionTypePanel);
 		topHalf.add(wordPanel);
 		topHalf.add(nrAddConditionsPanel1);
@@ -463,6 +482,7 @@ public class SOOHPServerMainGUI extends JPanel {
 		
 		bottomHalf.setLayout((new GridLayout(3, 1)));
 		bottomHalf.add(questionTextPanel);
+		bottomHalf.add(nrIsFixPanel);
 		bottomHalf.add(nrButtonPanel);
 		// /test
 
@@ -481,6 +501,45 @@ public class SOOHPServerMainGUI extends JPanel {
 		public void mouseReleased(MouseEvent e) {
 			newOrSaved = "Saved";
 			showClueListScreen();
+		}
+	}
+	
+	public static class updateButtonHandler extends MouseAdapter {
+		public void mouseReleased(MouseEvent e) {
+			System.out.println("Update");
+			///TODO add update code
+			File updateFolder = new File(pathUpdates);
+			///File applicationFolder = new File(pathApplication);
+			
+			
+			//first copy the files over
+			System.out.println("cmd /c start D:\\SOOHPServer\\Application\\copyFiles.bat");
+			String runString = ("cmd /c start D:\\SOOHPServer\\Application\\copyFiles.bat");
+			try {
+				Runtime.getRuntime().exec(runString);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			//then get the current version number & increment the current version number
+			File versionFile = new File(updateFolder + "\\version.txt");
+			try {
+				@SuppressWarnings("resource")
+				Scanner versionScanner = new Scanner(new File(updateFolder + "\\version.txt")).useDelimiter("\n");
+				int currentVersionNumber = versionScanner.nextInt();
+				currentVersionNumber++;
+				String versionString = Integer.toString(currentVersionNumber);
+				FileUtils.writeStringToFile(versionFile, versionString, false);
+				versionScanner.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			
+			
+			
 		}
 	}
 
@@ -592,7 +651,82 @@ public class SOOHPServerMainGUI extends JPanel {
 
 	public static class nrSaveHandler extends MouseAdapter {
 		public void mouseReleased(MouseEvent e) {
+			
+			///TODO ADD ALL THE SAVE FUNCTIONALITY
+			String printQuestionType = new String(SelectedType);
+			String printWord1 = new String(word1.getText());
+			String printWord2 = new String(word2.getText());
+			String printWord3 = new String(word3.getText());
+			String printTestName = new String("Test." + printQuestionType +"."+ printWord1+"."+printWord2+"."+printWord3);
+			String printTriedName = new String("Tried."+ printQuestionType+"."+printWord1+"."+printWord2+"."+printWord3);
+			String printConditions = new String(SelectedConditions+"(this not contains \""+printTriedName);
+			String printTestText = new String(questionTextArea.getText());
+			String printIsFix = new String();
+			if (nrIsFixBox.isSelected()){
+				printIsFix = (".isFix");
+			}
+			else{
+				printIsFix = ("");
+			}
 			System.out.println("nrSave");
+			
+			// if the three word boxes don't contain illegal characters and have
+			// text
+			if (!((validateWordText(word1.getText()) == true)
+					&& (validateWordText(word2.getText()) == true) && (validateWordText(word3
+						.getText()) == true))) {
+				chooseWordsLabel
+						.setText("only letters and numbers allowed no spaces or symbols");
+			}
+			// if the question text doesn't contain illegal characters and has
+			// text
+			else if (!(validateQuestionText(questionTextArea.getText()) == true)) {
+				questionTextLabel.setText("dont put a , or a ; in here");
+			}
+			// append the question to allQuestions.csv in the application folder
+			// TODO and in the updates folder
+			else {
+				//this writes the test question to all questions.csv
+				PrintWriter writer1;
+				try {
+					// the file name contains whether there was a successful
+					// fix, and the date and time
+					writer1 = new PrintWriter(new FileWriter(pathApplication
+							+ "allQuestions.csv", true));
+
+					writer1.println("Test,"+printTestName + printIsFix +","
+							+ printTestText);
+					writer1.close();	
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				//this writes the new rule to the drl
+				PrintWriter writer2;
+				try {
+					// the file name contains whether there was a successful
+					// fix, and the date and time
+					writer2 = new PrintWriter(new FileWriter(pathApplication
+							+ "SOOHP.drl", true));
+
+					writer2.println("rule \""+printTestName+"\"");
+					writer2.println("when");
+					writer2.println("$C : Vector()");
+					writer2.println("$D : Vector("+printConditions+"\"))");
+					writer2.println("then");
+					writer2.println("	$C.add(\""+printTestName+"\");");
+					writer2.println("	SOOHPMain.SOOHPUI.showTestScreen(\""+printTestName+"\");");
+					writer2.println("end");
+					writer2.println("");
+					writer2.close();	
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
+			
 		}
 	}
 	
@@ -605,10 +739,13 @@ public class SOOHPServerMainGUI extends JPanel {
 					String thisCondition = new String(typeQuestions.get(b).getQuestionName());
 					//conditionTextArea.setText(thisCondition);
 					conditionTextArea.append(thisCondition + "-"+nrYesNo+"\n");
+					SelectedConditions = SelectedConditions.concat("(this contains \""+thisCondition + "-"+nrYesNo+"\")&&");
+					System.out.println(SelectedConditions);
 				}
 			}
 		}
 	}
+
 
 	
 	public static class selectButtonHandler extends MouseAdapter {
