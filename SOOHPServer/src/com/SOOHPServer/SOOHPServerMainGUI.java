@@ -507,7 +507,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static class updateButtonHandler extends MouseAdapter {
 		public void mouseReleased(MouseEvent e) {
 			System.out.println("Update");
-			///TODO add update code
+			///THIS METHOD CALLS THE COPY SCRIPT AND INCREMENTS THE VERSION NUMBER
 			File updateFolder = new File(pathUpdates);
 			///File applicationFolder = new File(pathApplication);
 			
@@ -623,7 +623,7 @@ public class SOOHPServerMainGUI extends JPanel {
 				bottomLabel.setText("dont put a , or a ; in here");
 			}
 			// append the question to allQuestions.csv in the application folder
-			// TODO and in the updates folder
+		
 			else {
 
 				PrintWriter writer;
@@ -652,7 +652,7 @@ public class SOOHPServerMainGUI extends JPanel {
 	public static class nrSaveHandler extends MouseAdapter {
 		public void mouseReleased(MouseEvent e) {
 			
-			///TODO ADD ALL THE SAVE FUNCTIONALITY
+			///THISS METHOD CONTAINS ALL THE SAVE FUNCTIONALITY FOR NEW RULES
 			String printQuestionType = new String(SelectedType);
 			String printWord1 = new String(word1.getText());
 			String printWord2 = new String(word2.getText());
@@ -684,7 +684,6 @@ public class SOOHPServerMainGUI extends JPanel {
 				questionTextLabel.setText("dont put a , or a ; in here");
 			}
 			// append the question to allQuestions.csv in the application folder
-			// TODO and in the updates folder
 			else {
 				//this writes the test question to all questions.csv
 				PrintWriter writer1;
@@ -837,7 +836,7 @@ public class SOOHPServerMainGUI extends JPanel {
 
 	public static void nextClueList() {
 		if (listOfClueListFiles.isEmpty()) {
-			// TODO this line has to be replaced
+
 			questionTextArea.setText("No more clue lists");
 			System.out.println("No more clue lists");
 		} else {
@@ -863,7 +862,7 @@ public class SOOHPServerMainGUI extends JPanel {
 
 	public static void previousClueList() {
 		if (listOfClueListFiles.isEmpty()) {
-			// TODO this line has to be replaced
+	
 			System.out.println("No more clue lists");
 		} else {
 			try {
